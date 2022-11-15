@@ -49,7 +49,7 @@ function Converter() {
   return (
     <div style={container}>
       <form onSubmit={handleSubmit}>
-        <input id="name" name="hex" value={form.name} onChange={handleNameChange} />
+        <input id="name" name="hex" placeholder="Введите hex" value={form.name} onChange={handleNameChange} />
         <br />
         <label htmlFor="name">{form.rgb}</label>
       </form>

@@ -9,19 +9,20 @@ function Training() {
     
     let checkData = true; 
     items.forEach(element => {
-      if (element.date == evt.target.date.value){
+      if (element.date == evt.target.date.value.replace(/\-/g, '.')){
         element.distance += parseFloat(evt.target.distance.value);
         checkData = false;
       }
     });
+    console.log(form.date);
 
     if (checkData){
       setItems([...items, form].sort((a, b) => {
-        return new Date(a.date) > new Date(b.date) ? 1 : -1;
+        return new Date(a.date) > new Date(b.date) ? -1 : 1;
       }));
     } else {
       setItems([...items].sort((a, b) => {
-        return new Date(a.date) > new Date(b.date) ? 1 : -1;
+        return new Date(a.date) > new Date(b.date) ? -1 : 1;
       }));
     }
   }
@@ -32,12 +33,12 @@ function Training() {
   });
 
   const handleClick = (form_date, form_distance) => {
-    setForm(prevForm => ({...prevForm, date: form_date}));
+    setForm(prevForm => ({...prevForm, date: form_date.replace(/\-/g, '.')}));
     setForm(prevForm => ({...prevForm, distance: parseFloat(form_distance)}));
   }
 
   const handleNameChangeDate = evt => {
-    setForm(prevForm => ({...prevForm, date: evt.target.value}));
+    setForm(prevForm => ({...prevForm, date: evt.target.value.replace(/\-/g, '.')}));
   }
 
   const handleNameChangeDistance = evt => {
@@ -48,6 +49,10 @@ function Training() {
       value = parseFloat(evt.target.value);
     }
     setForm(prevForm => ({...prevForm, distance: value}));
+  }
+
+  const removeClick = (index) => {
+    setItems([...items.slice(0, index), ...items.slice(index + 1)]);
   }
   
   const [items, setItems] = useState([{
@@ -72,8 +77,8 @@ function Training() {
           </thead>
           <tbody>
             <tr>
-              <td><input id="date" name="date" value={form.date} onChange={handleNameChangeDate} pattern="\d{4}\.\d{1,2}\.\d{1,2}"/></td>
-              <td><input id="distance" name="distance" value={form.distance} onChange={handleNameChangeDistance}/></td>
+              <td><input id="date" type="date" name="date" value={form.date.replace(/\./g, '-')} onChange={handleNameChangeDate}/></td>
+              <td><input id="distance" type="number" name="distance" step="any" value={form.distance} onChange={handleNameChangeDistance}/></td>
               <td><button>ОК</button></td>
             </tr>
           </tbody>
@@ -86,11 +91,11 @@ function Training() {
           <th></th>
         </thead>
         <tbody>
-          {items.map((item) => 
+          {items.map((item, index) => 
             <tr>
               <td key={item.data}>{item.date}</td>
               <td key={item.distance}>{item.distance}</td>
-              <td><button onClick={() => handleClick(item.date, item.distance)}>ред.</button>  / <button>уд.</button></td>
+              <td><button onClick={() => handleClick(item.date, item.distance)}>ред.</button>  / <button onClick={() => removeClick(index)}>уд.</button></td>
             </tr>
           )}
         </tbody>
